@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Question {
+  id                String   @id @default(cuid())
+  category          String
+  difficulty        String
+  type              String
+  prompt            String
+  context           String?
+  options           String?
+  correctAnswer     String
+  explanation       String
+  rubric            String?
+  tags              String
+  timeLimit         Int?
+  platformRelevance String
+  createdAt         DateTime @default(now())
+  answers           QuizAnswer[]
+}
+
+model QuizSession {
+  id          String      @id @default(cuid())
+  category    String?
+  mode        String
+  score       Float?
+  totalQ      Int
+  correctQ    Int         @default(0)
+  duration    Int?
+  completed   Boolean     @default(false)
+  startedAt   DateTime    @default(now())
+  completedAt DateTime?
+  answers     QuizAnswer[]
+}
+
+model QuizAnswer {
+  id         String      @id @default(cuid())
+  sessionId  String
+  questionId String
+  answer     String
+  isCorrect  Boolean
+  timeSpent  Int?
+  session    QuizSession @relation(fields: [sessionId], references: [id])
+  question   Question    @relation(fields: [questionId], references: [id])
+  createdAt  DateTime    @default(now())
+}
+
+model UserProgress {
+  id             String    @id @default(cuid())
+  category       String    @unique
+  totalAttempted Int       @default(0)
+  totalCorrect   Int       @default(0)
+  avgTime        Float     @default(0)
+  lastPracticed  DateTime?
+  streak         Int       @default(0)
+}
+
+model DailyChallenge {
+  id          String    @id @default(cuid())
+  date        String    @unique
+  questionId  String
+  category    String
+  completed   Boolean   @default(false)
+  score       Float?
+  completedAt DateTime?
+}
+
+model UserSettings {
+  id              String  @id @default("default")
+  darkMode        Boolean @default(false)
+  difficulty      String  @default("auto")
+  dailyGoal       Int     @default(20)
+  focusCategories String  @default("[]")
+  apiKey          String?
+  timeGoal        Int     @default(30)
+}
+
+model StudyNote {
+  id        String   @id @default(cuid())
+  topic     String
+  category  String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
