@@ -16,8 +16,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Question not found' }, { status: 404 })
     }
 
-    // Score the answer
-    const answerStr = typeof answer === 'string' ? answer : JSON.stringify(answer)
+    // Score the answer - always JSON stringify for consistent comparison
+    const answerStr = JSON.stringify(answer)
     const isCorrect = scoreAnswer(question.type, answerStr, question.correctAnswer)
 
     // Store the answer

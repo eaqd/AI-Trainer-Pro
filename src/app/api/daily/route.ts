@@ -113,8 +113,7 @@ export async function POST(request: NextRequest) {
     }
 
     const correctAnswer = JSON.parse(question.correctAnswer)
-    const userAnswer = typeof answer === 'string' ? JSON.parse(answer) : answer
-    const isCorrect = JSON.stringify(userAnswer) === JSON.stringify(correctAnswer)
+    const isCorrect = JSON.stringify(answer) === JSON.stringify(correctAnswer)
 
     await prisma.dailyChallenge.update({
       where: { date },
